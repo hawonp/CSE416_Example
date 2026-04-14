@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta, timezone
 
 import jwt
-from app.core.settings import SETTINGS
-from jwt.exceptions import InvalidTokenError
 from pwdlib import PasswordHash
+
+from app.core.settings import SETTINGS
 
 password_hash = PasswordHash.recommended()
 
@@ -29,26 +29,3 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
         algorithm=SETTINGS.ALGORITHM,
     )
     return encoded_jwt
-
-
-def generate_password_reset_token(email: str) -> str:
-    delta = timedelta(hours=SETTINGS.EMAIL_RESET_TOKEN_EXPIRE_HOURS)
-    now = datetime.now(timezone.utc)
-    expires = now + delta
-    exp = expires.timestamp()
-    encoded_jwt = jwt.encode(
-        {"exp": exp, "nbf": now, "sub": email},
-        SETTINGS.SECRET_KEY,
-        algorithm=SETTINGS.ALGORITHM,
-    )
-    return encoded_jwt
-
-
-def verify_password_reset_token(token: str) -> str | None:
-    try:
-        decoded_token = jwt.decode(
-            token, SETTINGS.SECRET_KEY, algorithms=[SETTINGS.ALGORITHM]
-        )
-        return str(decoded_token["sub"])
-    except InvalidTokenError:
-        return None

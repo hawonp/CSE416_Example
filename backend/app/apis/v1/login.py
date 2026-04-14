@@ -6,11 +6,11 @@ from fastapi.security import OAuth2PasswordRequestForm
 from loguru import logger
 
 from app.apis.dependencies import SessionDep
-from app.core import security
 from app.core.settings import SETTINGS
 from app.schemas.login import LoginPayload, Token
 from app.schemas.users import UserLogIn
 from app.services.login.auth_user import authenticate_user
+from app.utils.security import create_access_token
 
 router = APIRouter(prefix="/login", tags=["login"])
 
@@ -39,7 +39,7 @@ def login_access_token(
         # create access token
         access_token_expires = timedelta(minutes=SETTINGS.ACCESS_TOKEN_EXPIRE_MINUTES)
         return Token(
-            access_token=security.create_access_token(
+            access_token=create_access_token(
                 data={"sub": str(dto.id)},
                 expires_delta=access_token_expires,
             )

@@ -3,8 +3,8 @@ from uuid import uuid4
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.security import get_password_hash
 from app.schemas.users import UserCreate, UserUpdate
+from app.utils.security import get_password_hash
 
 from .base import Base
 
@@ -47,6 +47,8 @@ class User(Base):
             lastname=data.lastname,
             email=data.email,
             password=get_password_hash(data.password),
+            is_active=True,
+            is_superuser=False,
         )
 
     def update(self, data: UserUpdate) -> None:
@@ -61,14 +63,21 @@ class User(Base):
             self.password = get_password_hash(data.password)
 
     def validate_password(self, password: str) -> None:
+        is_valid_length = len(password) >= 8
         has_digits = any(char.isdigit() for char in password)
         has_uppercase = any(char.isupper() for char in password)
         has_lowercase = any(char.islower() for char in password)
         has_special = any(char in "!@#$%^&*()-_=+[]{}|;:,.<>?/" for char in password)
 
-        if not (has_digits and has_uppercase and has_lowercase and has_special):
+        if not (
+            is_valid_length
+            and has_digits
+            and has_uppercase
+            and has_lowercase
+            and has_special
+        ):
             raise ValueError(
-                "Password must contain at least one digit, one uppercase letter, one lowercase letter, and one special character."
+                "Password must be at least 8 characters long and contain at least one digit, one uppercase letter, one lowercase letter, and one special character."
             )
 
     def __repr__(self) -> str:

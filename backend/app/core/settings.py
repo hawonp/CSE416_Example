@@ -18,9 +18,9 @@ class Settings(BaseSettings):
     SECRET_KEY: str = secrets.token_urlsafe(32)
 
     # database settings
-    POSTGRES_USER: str
+    POSTGRES_USER: str = ""
     POSTGRES_PASSWORD: str = ""
-    POSTGRES_SERVER: str
+    POSTGRES_SERVER: str = ""
     POSTGRES_PORT: int = 5432
     POSTGRES_DB: str = ""
 

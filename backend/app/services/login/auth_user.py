@@ -1,9 +1,9 @@
-from sqlalchemy import Select, select
+from sqlalchemy import Select, select, true
 from sqlalchemy.orm import Session
 
-from app.core.security import verify_password
 from app.models.users import User
 from app.schemas.login import LoginPayload
+from app.utils.security import verify_password
 
 
 def authenticate_user(db: Session, data: LoginPayload) -> User | None:
@@ -11,7 +11,7 @@ def authenticate_user(db: Session, data: LoginPayload) -> User | None:
         # make statement
         stmt: Select = select(User).where(
             User.email == data.email,
-            User.is_active.is_(True),
+            User.is_active.is_(true()),
         )
 
         # execute statement
