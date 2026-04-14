@@ -27,7 +27,7 @@
 - Auto generate virtual environment
     `uv run main.py`
 - Install packages
-    `uv add "fastapi[standard]" alembic SQLAlchemy`
+    `uv add "fastapi[standard]" alembic SQLAlchemy alembic-postgresql-enum httpx loguru pre-commit psycopg pwdlib[argon2] pyjwt`
 
 ### Using ty
 - Install ty (tool)
@@ -44,6 +44,12 @@
 ### Using alembic
 - Init alembic
     `uv run alembic init alembic`
+- Make a migration
+    `uv run alembic revision --autogenerate -m <message>`
+- Upgrade head
+    `uv run alembic upgrade head`
+- Downgrade head
+    `uv run alembic downgrade -1`
 
 ### Using pre-commit
 - Init pre-commit
@@ -51,3 +57,9 @@
 - Create a file called `.pre-commit-config.yaml`
 - Install git hooks
     `pre-commit install`
+
+## Running FastAPI
+- Run in dev
+    `uv run fastapi dev`
+- Run in production
+    `uv run fastapi run`
